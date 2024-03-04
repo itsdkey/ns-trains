@@ -3,7 +3,7 @@ from enum import Enum
 
 class BaseEnum(Enum):
     def __str__(self):
-        return "%s" % self.value
+        return "%s" % self.value.upper()
 
 
 class EventType(BaseEnum):
