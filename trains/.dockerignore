@@ -11,6 +11,7 @@ pip-delete-this-directory.txt
 .coverage.*
 .cache
 nosetests.xml
+celerybeat-schedule
 coverage.xml
 *,cover
 *.log
