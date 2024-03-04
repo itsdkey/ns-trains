@@ -23,6 +23,6 @@ def broadcast_train_destinations() -> dict:
     train.destination = choice(STATIONS)
     return {
         "created_at": datetime.now().isoformat(),
-        "event_name": str(EventType.TRAIN_DESTINATION),
+        "event_type": str(EventType.TRAIN_DESTINATION),
         "event_data": train.to_json(),
     }
