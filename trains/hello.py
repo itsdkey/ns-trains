@@ -1,8 +1,14 @@
 import os
 
-from src import create_app
+from flask import Flask
 
-app = create_app()
+app = Flask(__name__)
+
+
+@app.route("/")
+def hello_world() -> str:
+    return "<p>Hello, World!</p>"
+
 
 if __name__ == "__main__":
     app_port = int(os.environ["APP_PORT"])
