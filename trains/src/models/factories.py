@@ -1,19 +1,11 @@
 import factory
-from factory.fuzzy import FuzzyDecimal
-from src.models.models import Station, Train
-
-
-class StationFactory(factory.Factory):
-    class Meta:
-        model = Station
-
-    name = factory.Faker("city")
+from factory.fuzzy import FuzzyChoice
+from src.models.models import STATIONS, Train
 
 
 class TrainFactory(factory.Factory):
     class Meta:
         model = Train
 
-    destination = factory.SubFactory("src.models.factories.StationFactory")
+    destination = FuzzyChoice(STATIONS)
     id = factory.Faker("uuid4")
-    speed = FuzzyDecimal(0.0, 180.0)

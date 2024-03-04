@@ -16,11 +16,11 @@ enable_utc = True
 beat_schedule = {
     "broadcast-train-speed": {
         "task": "src.tasks.broadcast_train_speed",
-        "schedule": 10.0,
+        "schedule": 5.0,
     },
     "broadcast-train-destination": {
         "task": "src.tasks.broadcast_train_destinations",
-        "schedule": 180.0,
+        "schedule": 10.0,
     },
 }
 
