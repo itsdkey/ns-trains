@@ -10,7 +10,6 @@ COPY requirements.txt /app/
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        curl \
         gcc \
         g++ \
         pkg-config \
