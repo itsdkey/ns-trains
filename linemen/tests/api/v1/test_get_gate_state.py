@@ -1,20 +1,19 @@
 from http import HTTPStatus
-from unittest.mock import patch
 
+from flask import Flask
 from flask.testing import FlaskClient
+from src.db import db
 from src.models.factories import GateFactory
 
 URL_PATH = "/gates"
 
-database = {}
 
-
-@patch("src.api.v1.gates.database", new=database)
-def test_get_returns_gates_state(client: FlaskClient):
-    gate = GateFactory()
-    database[gate.station] = gate
-    data = {"station": gate.station}
-    expected_data = {"state": str(gate.state)}
+def test_get_returns_gates_state(app: Flask, client: FlaskClient):
+    with app.app_context():
+        gate = GateFactory()
+        db.session.commit()
+        data = {"station": gate.station}
+        expected_data = {"state": str(gate.state)}
 
     response = client.get(URL_PATH, query_string=data)
 
