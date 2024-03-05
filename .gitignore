@@ -173,3 +173,4 @@ terraform.rc
 
 # history fiels
 .bash_history
+.python_history
