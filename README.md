@@ -49,9 +49,11 @@ project's conventions. More info here: https://pre-commit.com/
 ## Start the app project using docker-compose
 This project contains the following containers:
 - redis - our Broker for celery
+- db - our Postgresql DB
 - trains - the trains app
 - headquarters - the headquarters app
 - linemen - the linemen app
+- migration - a shortcut to run migrations for the linemen service
 - wdb - a python debugger for backend devs (more on that later)
 
 To start the application and necessary containers locally with the following:
