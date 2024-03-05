@@ -1,6 +1,6 @@
 import factory
 from factory.fuzzy import FuzzyDecimal
-from src.dataclasses import CeleryEvent, TrainInfo
+from src.dataclasses.events import CeleryEvent, TrainInfo
 from src.enums import EventType
 
 

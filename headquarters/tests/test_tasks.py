@@ -1,7 +1,11 @@
+import os
 from decimal import Decimal
 from unittest import TestCase
+from unittest.mock import patch
 
-from src.dataclasses import CeleryEvent
+import responses
+from src.dataclasses.events import CeleryEvent
+from src.dataclasses.linemans import GateState
 from src.factories import CeleryEventFactory
 from src.tasks import process_train_speed, process_train_station
 
@@ -51,6 +55,16 @@ class TestProcessTrainStation(TestCase):
 
     def setUp(self) -> None:
         self.task = process_train_station
+        self.log_name = "headquarters"
+        self.lineman_domain = os.environ.get("LINEMAN_DOMAIN")
+
+        patch("src.tasks.sleep").start()
+        self.m_responses = responses.RequestsMock()
+        self.m_responses.start()
+
+        self.addCleanup(patch.stopall)
+        self.addCleanup(self.m_responses.reset)
+        self.addCleanup(self.m_responses.stop)
 
     @staticmethod
     def _prepare_station_event(event: CeleryEvent) -> dict:
@@ -64,16 +78,98 @@ class TestProcessTrainStation(TestCase):
             },
         }
 
-    def test_task_logs_station_info(self):
+    def _mock_lineman_response(
+        self, station: str, gate_state: GateState
+    ) -> responses.BaseResponse:
+        params = {"station": station}
+        return self.m_responses.get(
+            f"{self.lineman_domain}/api/v1.0/gates",
+            status=200,
+            json={"state": str(gate_state)},
+            match=[responses.matchers.query_param_matcher(params)],
+        )
+
+    def test_task_logs_info_when_gate_is_closed(self):
         event = CeleryEventFactory()
-        log_name = "headquarters"
+        station = event.event_data.destination
+        self._mock_lineman_response(station, GateState.CLOSED)
+        self.m_responses.post(
+            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            status=200,
+            json={"state": str(GateState.OPENED)},
+        )
         expected_messages = [
-            f"INFO:{log_name}:"
+            f"INFO:{self.log_name}:"
             f"station: {event.event_data.destination}, "
             f"train: {event.event_data.id}",
+            f"INFO:{self.log_name}:"
+            f"station: {event.event_data.destination}, "
+            f"Gate is closed!",
+            f"INFO:{self.log_name}:"
+            f"station: {event.event_data.destination}, "
+            f"Opening gate...",
         ]
-        with self.assertLogs(log_name) as cm:
+        with self.assertLogs(self.log_name) as cm:
 
             self.task(self._prepare_station_event(event))
 
             self.assertEqual(cm.output, expected_messages)
+
+    def test_task_logs_info_when_gate_is_opened(self):
+        event = CeleryEventFactory()
+        station = event.event_data.destination
+        self._mock_lineman_response(station, GateState.OPENED)
+        self.m_responses.post(
+            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            status=200,
+            json={"state": str(GateState.CLOSED)},
+        )
+        expected_messages = [
+            f"INFO:{self.log_name}:"
+            f"station: {event.event_data.destination}, "
+            f"train: {event.event_data.id}",
+            f"INFO:{self.log_name}:"
+            f"station: {event.event_data.destination}, "
+            f"Gate is opened. Closing gate...",
+            f"INFO:{self.log_name}:"
+            f"station: {event.event_data.destination}, "
+            f"Opening gate...",
+        ]
+        with self.assertLogs(self.log_name) as cm:
+
+            self.task(self._prepare_station_event(event))
+
+            self.assertEqual(cm.output, expected_messages)
+
+    def test_task_calls_lineman_to_do_his_work_when_gate_is_opened(self):
+        event = CeleryEventFactory()
+        station = event.event_data.destination
+        self._mock_lineman_response(station, GateState.OPENED)
+        self.m_responses.post(
+            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            status=200,
+            json={"state": str(GateState.CLOSED)},
+        )
+        self.m_responses.post(
+            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            status=200,
+            json={"state": str(GateState.OPENED)},
+        )
+
+        result = self.task(self._prepare_station_event(event))
+
+        self.assertIsNone(result)
+
+    def test_task_calls_lineman_to_do_his_work_when_gate_is_closed(self):
+        event = CeleryEventFactory()
+        station = event.event_data.destination
+        self._mock_lineman_response(station, GateState.CLOSED)
+        self.m_responses.post(
+            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            status=200,
+            json={"state": str(GateState.OPENED)},
+        )
+
+        result = self.task(self._prepare_station_event(event))
+
+        self.assertIsNone(result)
