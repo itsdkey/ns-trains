@@ -14,13 +14,13 @@ timezone = "Europe/Warsaw"
 enable_utc = True
 
 beat_schedule = {
-    "broadcast-train-speed": {
-        "task": "broadcast_train_speed",
-        "schedule": 10.0,
-    },
+    # "broadcast-train-speed": {
+    #     "task": "broadcast_train_speed",
+    #     "schedule": 10.0,
+    # },
     "broadcast-train-destination": {
         "task": "broadcast_train_destinations",
-        "schedule": 180.0,
+        "schedule": 10.0,
     },
 }
 

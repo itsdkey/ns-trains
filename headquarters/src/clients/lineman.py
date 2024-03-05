@@ -7,7 +7,7 @@ from src.clients.base import BaseClient
 from src.clients.exceptions import ClientRequestError
 from src.dataclasses.linemans import Gate
 
-logger = logging.getLogger("headquarters")
+logger = logging.getLogger(__name__)
 
 
 class LinemanClient(BaseClient):
