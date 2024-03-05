@@ -4,6 +4,7 @@ from logging.config import fileConfig
 from flask import Flask
 from src.api.v1 import gates, info
 from src.db import db, migrate
+from src.management import commands
 from werkzeug.utils import import_string
 
 
@@ -21,5 +22,6 @@ def create_app(config: str = None) -> Flask:
 
     flask_app.register_blueprint(info.bp, url_prefix="/")
     flask_app.register_blueprint(gates.bp, url_prefix="/")
+    flask_app.register_blueprint(commands.bp)
 
     return flask_app
