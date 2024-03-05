@@ -2,16 +2,16 @@ version: "3"
 services:
 
   redis:
-    container_name: 'ns-broker'
-    image: 'redis:7-alpine'
+    container_name: "ns-broker"
+    image: "redis:7-alpine"
     ports:
       - "6379:6379"
 
   trains:
     build:
       context: trains
-      dockerfile: './Dockerfile'
-    container_name: 'ns-trains'
+      dockerfile: "./Dockerfile"
+    container_name: "ns-trains"
     depends_on:
       - redis
     env_file: .env
@@ -21,8 +21,8 @@ services:
   headquarters:
     build:
       context: headquarters
-      dockerfile: './Dockerfile'
-    container_name: 'ns-headquarters'
+      dockerfile: "./Dockerfile"
+    container_name: "ns-headquarters"
     depends_on:
       - redis
     env_file: .env
@@ -32,22 +32,43 @@ services:
   linemen:
     build:
       context: linemen
-      dockerfile: './Dockerfile'
+      dockerfile: "./Dockerfile"
     command: ["local_entrypoint.sh"]
-    container_name: 'ns-linemen'
+    container_name: "ns-linemen"
+    depends_on:
+      - db
     env_file: .env
     ports:
       - "8000:8000"
     volumes:
       - "./linemen/:/app"
 
+  migration:
+    build:
+      context: linemen
+      dockerfile: "./Dockerfile"
+    command: ["bash", "wait-for-it.sh", "db:5432", "--", "flask", "db", "upgrade"]
+    container_name: "ns-linemen-migration"
+    depends_on:
+      - db
+    env_file: .env
+
+  db:
+    container_name: "ns-linemen-db"
+    env_file: .env
+    image: "postgres:14.3-alpine"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
   wdb:
-    image: 'kozea/wdb:3.3.0'
-    container_name: ns-wdb
+    image: "kozea/wdb:3.3.0"
+    container_name: "ns-wdb"
     deploy:
       resources:
         limits:
           memory: 1gb
     ports:
-      - '1984:1984'
+      - "1984:1984"
 
