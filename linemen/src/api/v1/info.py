@@ -4,7 +4,7 @@ import os
 from flask import Blueprint
 from src.version import __version__
 
-logger = logging.getLogger("trains")
+logger = logging.getLogger("linemen")
 
 
 bp = Blueprint("info", __name__)
