@@ -6,7 +6,7 @@ from requests import Response
 from requests.exceptions import ConnectionError, SSLError, Timeout
 from src.clients.exceptions import ClientError
 
-logger = logging.getLogger("headquarters")
+logger = logging.getLogger(__name__)
 
 
 class ClientInterface(ABC):

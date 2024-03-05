@@ -14,7 +14,7 @@
 Env variables are used around the project. To enable working on the project locally please fill the following variables in your .env file:
 
 * BROKER_URL=redis://redis:6379/0
-* LINEMAN_DOMAIN=http://linemans
+* LINEMAN_DOMAIN=http://linemen:8000
 * POSTGRES_USER=postgres
 * POSTGRES_PASSWORD=linemen1234
 * POSTGRES_DB=linemen

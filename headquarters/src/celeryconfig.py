@@ -1,9 +1,12 @@
 import os
+from logging.config import fileConfig
 
 from dotenv import load_dotenv
 from kombu import Exchange, Queue
 
 load_dotenv()
+
+fileConfig("logging.ini")
 
 broker_connection_retry_on_startup = True
 broker_url = os.environ["BROKER_URL"]

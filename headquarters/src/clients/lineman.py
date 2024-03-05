@@ -7,14 +7,13 @@ from src.clients.base import BaseClient
 from src.clients.exceptions import ClientRequestError
 from src.dataclasses.linemans import Gate
 
-logger = logging.getLogger("headquarters")
+logger = logging.getLogger(__name__)
 
 
 class LinemanClient(BaseClient):
     def __init__(self, domain: str = None, **kwargs) -> None:
         domain = domain or os.environ.get("LINEMAN_DOMAIN")
         super().__init__(domain, **kwargs)
-        self.api_path = "api/v1.0"
 
     def get(self, path: str, data: dict) -> dict:
         uri = self._build_uri(path)
@@ -33,7 +32,7 @@ class LinemanClient(BaseClient):
         return response.json()
 
     def _build_uri(self, path: str) -> str:
-        return f"{self.domain}/{self.api_path}{path}"
+        return f"{self.domain}{path}"
 
     def get_gate_state(self, station: str) -> Gate:
         resource = "/gates"
