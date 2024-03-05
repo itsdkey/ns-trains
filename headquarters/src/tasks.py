@@ -19,8 +19,8 @@ def process_train_speed(event: dict) -> None:
         logger_name = "slow"
     elif Decimal("40") <= train_speed < Decimal("140"):
         logger_name = "normal"
-    logger = logging.getLogger(logger_name)
 
+    logger = logging.getLogger(logger_name)
     logger.info("train: %s, speed: %s", train.id, train_speed)
 
 

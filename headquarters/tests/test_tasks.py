@@ -83,7 +83,7 @@ class TestProcessTrainStation(TestCase):
     ) -> responses.BaseResponse:
         params = {"station": station}
         return self.m_responses.get(
-            f"{self.lineman_domain}/api/v1.0/gates",
+            f"{self.lineman_domain}/gates",
             status=200,
             json={"state": str(gate_state)},
             match=[responses.matchers.query_param_matcher(params)],
@@ -94,7 +94,7 @@ class TestProcessTrainStation(TestCase):
         station = event.event_data.destination
         self._mock_lineman_response(station, GateState.CLOSED)
         self.m_responses.post(
-            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            f"{self.lineman_domain}/gates/{station}/change-state",
             status=200,
             json={"state": str(GateState.OPENED)},
         )
@@ -120,7 +120,7 @@ class TestProcessTrainStation(TestCase):
         station = event.event_data.destination
         self._mock_lineman_response(station, GateState.OPENED)
         self.m_responses.post(
-            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            f"{self.lineman_domain}/gates/{station}/change-state",
             status=200,
             json={"state": str(GateState.CLOSED)},
         )
@@ -146,12 +146,12 @@ class TestProcessTrainStation(TestCase):
         station = event.event_data.destination
         self._mock_lineman_response(station, GateState.OPENED)
         self.m_responses.post(
-            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            f"{self.lineman_domain}/gates/{station}/change-state",
             status=200,
             json={"state": str(GateState.CLOSED)},
         )
         self.m_responses.post(
-            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            f"{self.lineman_domain}/gates/{station}/change-state",
             status=200,
             json={"state": str(GateState.OPENED)},
         )
@@ -165,7 +165,7 @@ class TestProcessTrainStation(TestCase):
         station = event.event_data.destination
         self._mock_lineman_response(station, GateState.CLOSED)
         self.m_responses.post(
-            f"{self.lineman_domain}/api/v1.0/gates/{station}/change-state",
+            f"{self.lineman_domain}/gates/{station}/change-state",
             status=200,
             json={"state": str(GateState.OPENED)},
         )
