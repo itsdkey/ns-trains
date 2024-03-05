@@ -1,6 +1,6 @@
 import factory
 from factory.fuzzy import FuzzyDecimal
-from src.dataclasses import TrainInfo, TrainSpeedEvent
+from src.dataclasses import CeleryEvent, TrainInfo
 from src.enums import EventType
 
 
@@ -13,9 +13,9 @@ class TrainInfoFactory(factory.Factory):
     speed = FuzzyDecimal(0, 180)
 
 
-class TrainSpeedEventFactory(factory.Factory):
+class CeleryEventFactory(factory.Factory):
     class Meta:
-        model = TrainSpeedEvent
+        model = CeleryEvent
 
     created_at = factory.Faker("date_time")
     event_type = EventType.TRAIN_SPEED

@@ -11,6 +11,14 @@ from src.enums import EventType
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
+class TrainInfo:
+    destination: str
+    id: UUID
+    speed: Decimal
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
 class CeleryEvent:
     created_at: datetime = field(
         metadata=config(
@@ -20,18 +28,4 @@ class CeleryEvent:
         ),
     )
     event_type: EventType
-    event_data: dict
-
-
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class TrainInfo:
-    destination: str
-    id: UUID
-    speed: Decimal
-
-
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class TrainSpeedEvent(CeleryEvent):
     event_data: TrainInfo

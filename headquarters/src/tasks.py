@@ -2,12 +2,12 @@ import logging
 from decimal import Decimal
 
 from src.celery import app
-from src.dataclasses import TrainSpeedEvent
+from src.dataclasses import CeleryEvent
 
 
 @app.task(name="process_speed")
 def process_train_speed(event: dict) -> None:
-    event: TrainSpeedEvent = TrainSpeedEvent.from_dict(event)
+    event: CeleryEvent = CeleryEvent.from_dict(event)
 
     train = event.event_data
     train_speed = train.speed
@@ -21,5 +21,11 @@ def process_train_speed(event: dict) -> None:
     logger.info("train: %s, speed: %s", train.id, train_speed)
 
 
-@app.task(name="process_destination")
-def process_train_destinations(): ...
+@app.task(name="process_station")
+def process_train_station(event: dict):
+    event: CeleryEvent = CeleryEvent.from_dict(event)
+
+    train = event.event_data
+
+    logger = logging.getLogger("headquarters")
+    logger.info("station: %s, train: %s", train.destination, train.id)
