@@ -5,7 +5,6 @@
 * [Start the app project using docker-compose](#start-the-app-project-using-docker-compose)
 * [Doing stuff related to the project](#doing-stuff-related-to-the-project)
   * [Always execute commands inside a container](#always-execute-commands-inside-a-container)
-  * [Migrations](#migrating-and-setting-up-database)
 * [Testing](#testing)
 * [Debugging](#debugging)
 
@@ -36,6 +35,7 @@ project's conventions. More info here: https://pre-commit.com/
 ## Start the app project using docker-compose
 This project contains the following containers:
 - app - the trains app
+- redis - our Broker for celery
 - tests - a shortcut to run tests in a separate container
 - wdb - a python debugger for backend devs (more on that later)
 
@@ -46,8 +46,10 @@ docker compose up app
 Note: you can run this in the background just but adding the option `-d` so the command looks like:
 `docker compose up -d app`.
 
-This will run 1 container: app. Review if it is working on:
-http://127.0.0.1:8000/health-check
+This will run 2 container: app and redis. To verify it is working please check the app's container logs
+```shell
+docker compose logs -f trains
+```
 
 
 ## Doing stuff related to the project
@@ -69,18 +71,6 @@ docker exec -it trains-app bash
 
 The first one creates a separate container if you have the project already running (it will be removed after
 exiting it). The second one will enter the running container itself.
-
-### Migrating and setting up database
-If you want to modify database, start with changing the code in src/models. Then generate a migration file
-with the following command:
-```shell
-flask db migrate -m "Adding a new column"
-```
-
-Apply the migration with:
-```shell
-flask db upgrade
-```
 
 ## Testing
 **CAUTION!** Tests should run a separate 'clean' database. To do that please set the
