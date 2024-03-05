@@ -6,7 +6,7 @@ from dataclasses_json import Undefined, dataclass_json
 
 class GateState(Enum):
     OPENED = "OPENED"
-    CLOSED = "PENDING"
+    CLOSED = "CLOSED"
 
     def __str__(self):
         return "%s" % self.value

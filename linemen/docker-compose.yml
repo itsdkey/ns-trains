@@ -1,0 +1,68 @@
+version: "3"
+services:
+
+  app:
+    build: .
+    command: ["bash", "wait-for-it.sh", "db:5432", "--", "python", "app.py"]
+    container_name: "linemen-app"
+    env_file: .env
+    depends_on:
+      - migration
+      - db
+    networks:
+      - ns_network
+    ports:
+      - "8000:8000"
+    volumes:
+      - ".:/app"
+
+  migration:
+    build: .
+    command: ["bash", "wait-for-it.sh", "db:5432", "--", "flask", "db", "upgrade"]
+    container_name: 'linemen-migration'
+    depends_on:
+      - db
+    env_file: .env
+    networks:
+      - ns_network
+
+  db:
+    container_name: 'linemen-db'
+    env_file: .env
+    image: 'postgres:14.3-alpine'
+    networks:
+      - ns_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  tests:
+    build: .
+    command: ["pytest"]
+    container_name: "linemen-tests"
+    env_file: .env
+    networks:
+      - ns_network
+    volumes:
+      - ".:/app"
+
+  wdb:
+    image: "kozea/wdb:3.3.0"
+    container_name: wdb
+    deploy:
+      resources:
+        limits:
+          memory: 1gb
+    networks:
+      - ns_network
+    ports:
+      - "1984:1984"
+
+volumes:
+  db-data:
+
+networks:
+  ns_network:
+    driver: bridge
+    name: ns_network
