@@ -16,10 +16,10 @@ enable_utc = True
 
 task_queues = (
     Queue("speed", Exchange("speed")),
-    Queue("destination", Exchange("destination")),
+    Queue("station", Exchange("station")),
 )
 
 task_routes = {
     "process_speed": {"queue": "speed"},
-    "process_destination": {"queue": "destination"},
+    "process_station": {"queue": "station"},
 }

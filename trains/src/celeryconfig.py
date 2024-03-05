@@ -26,4 +26,5 @@ beat_schedule = {
 
 task_routes = {
     "process_speed": {"queue": "speed"},
+    "process_station": {"queue": "station"},
 }

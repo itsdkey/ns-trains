@@ -1,7 +1,6 @@
 FROM python:3.12-slim
 
-ENV APP_PORT=8000 \
-    PATH="/app/scripts:${PATH}"
+ENV PATH="/app/scripts:${PATH}"
 
 WORKDIR /app
 
@@ -32,5 +31,4 @@ COPY . /app/
 
 USER 1000
 
-EXPOSE $APP_PORT
 CMD ["entrypoint.sh"]
