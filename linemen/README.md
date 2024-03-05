@@ -71,8 +71,9 @@ The first one creates a separate container if you have the project already runni
 exiting it). The second one will enter the running container itself.
 
 ### Migrating and setting up database
-If you want to modify database, start with changing the code in src/models. Then generate a migration file
-with the following command:
+Migrations are provided by [Alembic](https://alembic.sqlalchemy.org/en/latest/) and
+[Flask-migrate](https://flask-migrate.readthedocs.io/en/latest/). If you want to modify database,
+start with changing the code in src/models. Then generate a migration file with the following command:
 ```shell
 flask db migrate -m "Adding a new column"
 ```

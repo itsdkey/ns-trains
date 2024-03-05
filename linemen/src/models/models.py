@@ -1,16 +1,8 @@
-from dataclasses import dataclass
-from enum import Enum
+from sqlalchemy import Enum
+from src.db import db
+from src.models.enums import GateState
 
 
-class GateState(Enum):
-    OPENED = "OPENED"
-    CLOSED = "CLOSED"
-
-    def __str__(self):
-        return "%s" % self.value
-
-
-@dataclass
-class Gate:
-    state: GateState
-    station: str
+class Gate(db.Model):
+    station = db.Column(db.String(64), primary_key=True)
+    state = db.Column(Enum(GateState))
