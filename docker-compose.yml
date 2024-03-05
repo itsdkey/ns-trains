@@ -72,3 +72,5 @@ services:
     ports:
       - "1984:1984"
 
+volumes:
+  db-data:
