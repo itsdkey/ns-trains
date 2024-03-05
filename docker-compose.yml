@@ -29,14 +29,17 @@ services:
     volumes:
       - "./headquarters/:/app"
 
-#  cabmans:
-#    build:
-#      context: cabmans
-#      dockerfile: './Dockerfile'
-#    container_name: 'ns-cabmans'
-#    env_file: .env
-#    volumes:
-#      - "./cabmans/:/app"
+  linemen:
+    build:
+      context: linemen
+      dockerfile: './Dockerfile'
+    command: ["local_entrypoint.sh"]
+    container_name: 'ns-linemen'
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./linemen/:/app"
 
   wdb:
     image: 'kozea/wdb:3.3.0'
