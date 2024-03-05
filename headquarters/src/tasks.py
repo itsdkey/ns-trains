@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from time import sleep
 
-from src.celery import app
+from src import app
 from src.clients.lineman import LinemanClient
 from src.dataclasses.events import CeleryEvent
 from src.dataclasses.linemans import GateState
