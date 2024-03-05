@@ -36,6 +36,8 @@ project's conventions. More info here: https://pre-commit.com/
 ## Start the app project using docker-compose
 This project contains the following containers:
 - app - the trains app
+- db - the database container
+- migrations - a shortcut to run migrations on db
 - tests - a shortcut to run tests in a separate container
 - wdb - a python debugger for backend devs (more on that later)
 
@@ -86,7 +88,7 @@ flask db upgrade
 ## Testing
 **CAUTION!** Tests should run a separate 'clean' database. To do that please set the
 `SQLALCHEMY_DATABASE_URI` correctly. After that please create an additional database with the "test_" prefix.
-Tests run on a separate configuration which can be found in `src.config.TestingConfig`.
+Tests run on a separate configuration which can be found in `src.configs.TestingConfig`.
 
 To provide tests we use a library called [pytest](https://docs.pytest.org/en/8.0.x/). Feel free to read more about it.
 
