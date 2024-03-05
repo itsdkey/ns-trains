@@ -48,7 +48,7 @@ Note: you can run this in the background just but adding the option `-d` so the 
 
 This will run 2 container: app and redis. To verify it is working please check the app's container logs
 ```shell
-docker compose logs -f trains
+docker compose logs -f app
 ```
 
 

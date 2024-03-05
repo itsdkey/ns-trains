@@ -1,0 +1,48 @@
+version: "3"
+services:
+
+  app:
+    build: .
+    container_name: 'headquarters-app'
+    depends_on:
+      - redis
+    env_file: .env
+    networks:
+      - ns_network
+    volumes:
+      - ".:/app"
+
+  tests:
+    build: .
+    command: ["pytest"]
+    container_name: 'headquarters-tests'
+    env_file: .env
+    networks:
+      - ns_network
+    volumes:
+      - ".:/app"
+
+  redis:
+    container_name: 'ns-broker'
+    image: 'redis:7-alpine'
+    networks:
+      - ns_network
+    ports:
+      - "6379:6379"
+
+  wdb:
+    image: 'kozea/wdb:3.3.0'
+    container_name: wdb
+    deploy:
+      resources:
+        limits:
+          memory: 1gb
+    networks:
+      - ns_network
+    ports:
+      - '1984:1984'
+
+networks:
+  ns_network:
+    driver: bridge
+    name: ns_network
