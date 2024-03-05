@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from kombu import Exchange, Queue
 
 load_dotenv()
 
@@ -13,17 +14,12 @@ accept_content = ["json"]
 timezone = "Europe/Warsaw"
 enable_utc = True
 
-beat_schedule = {
-    "broadcast-train-speed": {
-        "task": "broadcast_train_speed",
-        "schedule": 5.0,
-    },
-    "broadcast-train-destination": {
-        "task": "broadcast_train_destinations",
-        "schedule": 10.0,
-    },
-}
+task_queues = (
+    Queue("speed", Exchange("speed")),
+    Queue("destination", Exchange("destination")),
+)
 
 task_routes = {
     "process_speed": {"queue": "speed"},
+    "process_destination": {"queue": "destination"},
 }

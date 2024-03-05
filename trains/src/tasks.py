@@ -9,20 +9,22 @@ from src.models.models import STATIONS
 train = TrainFactory()
 
 
-@app.task
-def broadcast_train_speed() -> dict:
-    return {
+@app.task(name="broadcast_train_speed")
+def broadcast_train_speed() -> None:
+    data = {
         "created_at": datetime.now().isoformat(),
         "event_type": str(EventType.TRAIN_SPEED),
         "event_data": train.to_json(),
     }
+    app.send_task("process_speed", args=[data])
 
 
-@app.task
-def broadcast_train_destinations() -> dict:
+@app.task(name="broadcast_train_destinations")
+def broadcast_train_destinations() -> None:
     train.destination = choice(STATIONS)
-    return {
+    data = {
         "created_at": datetime.now().isoformat(),
         "event_type": str(EventType.TRAIN_DESTINATION),
         "event_data": train.to_json(),
     }
+    app.send_task("process_station", args=[data])

@@ -27,11 +27,13 @@ class TestBroadcastTrainSpeed(TestCase):
             "speed": str(train.speed),
         }
 
+    @patch("src.tasks.app.send_task")
     @patch("src.tasks.datetime")
-    def test_success(self, m_datetime):
+    def test_task_sends_info_to_queue(self, m_datetime, m_send_task):
         today = datetime.now()
         m_datetime.now.return_value = today
-        expected_result = {
+        task_name = "process_speed"
+        expected_data = {
             "created_at": today.isoformat(),
             "event_type": str(EventType.TRAIN_SPEED),
             "event_data": self._prepare_train_info(self.train),
@@ -39,7 +41,8 @@ class TestBroadcastTrainSpeed(TestCase):
 
         result = self.task()
 
-        self.assertDictEqual(result, expected_result)
+        self.assertIsNone(result)
+        m_send_task.assert_called_once_with(task_name, args=[expected_data])
 
 
 class TestBroadcastTrainDestination(TestCase):
@@ -60,14 +63,16 @@ class TestBroadcastTrainDestination(TestCase):
             "speed": str(train.speed),
         }
 
+    @patch("src.tasks.app.send_task")
     @patch("src.tasks.choice")
     @patch("src.tasks.datetime")
-    def test_success(self, m_datetime, m_choice):
+    def test_success(self, m_datetime, m_choice, m_send_task):
         new_destination = STATIONS[0]
         self.train.destination = m_choice.return_value = new_destination
         today = datetime.now()
         m_datetime.now.return_value = today
-        expected_result = {
+        task_name = "process_station"
+        expected_data = {
             "created_at": today.isoformat(),
             "event_type": str(EventType.TRAIN_DESTINATION),
             "event_data": self._prepare_train_info(self.train),
@@ -75,4 +80,5 @@ class TestBroadcastTrainDestination(TestCase):
 
         result = self.task()
 
-        self.assertDictEqual(result, expected_result)
+        self.assertIsNone(result)
+        m_send_task.assert_called_once_with(task_name, args=[expected_data])

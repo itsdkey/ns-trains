@@ -171,3 +171,5 @@ terraform.rc
 # terraform lock
 .terraform.lock.hcl
 
+# history fiels
+.bash_history

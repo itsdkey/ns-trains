@@ -1,0 +1,51 @@
+version: "3"
+services:
+
+  redis:
+    container_name: 'ns-broker'
+    image: 'redis:7-alpine'
+    ports:
+      - "6379:6379"
+
+  trains:
+    build:
+      context: trains
+      dockerfile: './Dockerfile'
+    container_name: 'ns-trains'
+    depends_on:
+      - redis
+    env_file: .env
+    volumes:
+      - "./trains/:/app"
+
+  headquarters:
+    build:
+      context: headquarters
+      dockerfile: './Dockerfile'
+    command: ["entrypoint_celery.sh"]
+    container_name: 'ns-headquarters'
+    depends_on:
+      - redis
+    env_file: .env
+    volumes:
+      - "./headquarters/:/app"
+
+#  cabmans:
+#    build:
+#      context: cabmans
+#      dockerfile: './Dockerfile'
+#    container_name: 'ns-cabmans'
+#    env_file: .env
+#    volumes:
+#      - "./cabmans/:/app"
+
+  wdb:
+    image: 'kozea/wdb:3.3.0'
+    container_name: ns-wdb
+    deploy:
+      resources:
+        limits:
+          memory: 1gb
+    ports:
+      - '1984:1984'
+
