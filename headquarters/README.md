@@ -1,4 +1,4 @@
-# trains
+# headquarters
 
 * [Backend devs](#backend-devs)
   * [Local development](#local-development-and-project-conventions)
