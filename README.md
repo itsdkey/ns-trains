@@ -53,7 +53,7 @@ This project contains the following containers:
 - trains - the trains app
 - headquarters - the headquarters app
 - linemen - the linemen app
-- migration - a shortcut to run migrations for the linemen service
+- migration - a shortcut to run migrations and prepopulate for the linemen service
 - wdb - a python debugger for backend devs (more on that later)
 
 To start the application and necessary containers locally with the following:

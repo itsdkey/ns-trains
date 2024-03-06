@@ -47,7 +47,7 @@ services:
     build:
       context: linemen
       dockerfile: "./Dockerfile"
-    command: ["bash", "wait-for-it.sh", "db:5432", "--", "flask", "db", "upgrade"]
+    command: ["bash", "init_db.sh"]
     container_name: "ns-linemen-migration"
     depends_on:
       - db
@@ -56,7 +56,7 @@ services:
   db:
     container_name: "ns-linemen-db"
     env_file: .env
-    image: "postgres:14.3-alpine"
+    image: "postgres:16.1-alpine"
     ports:
       - "5432:5432"
     volumes:

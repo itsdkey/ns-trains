@@ -17,7 +17,7 @@ def get_gate_state() -> dict:
     station = request.args.get("station")
     if station:
         gate = Gate.query.filter(Gate.station == station).first_or_404()
-        return {"state": str(gate.state)}
+        return {"state": str(gate.state), "updated_at": gate.updated_at.isoformat()}
     abort(HTTPStatus.NOT_FOUND)
 
 
@@ -30,4 +30,4 @@ def update_gate_state(station: str) -> dict:
         new_state = GateState.OPENED
     gate.state = new_state
     db.session.commit()
-    return {"state": str(gate.state)}
+    return {"state": str(gate.state), "updated_at": gate.updated_at.isoformat()}

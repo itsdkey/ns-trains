@@ -1,7 +1,8 @@
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
+from sqlalchemy import DateTime, Integer, MetaData
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -14,3 +15,18 @@ meta = MetaData(
     )
 )
 _Base = declarative_base(metadata=meta)
+
+
+class BaseModel(db.Model):
+    __abstract__ = True
+    id = db.Column(Integer, primary_key=True)
+
+    created_at = db.Column(
+        DateTime(timezone=True), server_default=func.now(), index=True
+    )
+    updated_at = db.Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        index=True,
+        onupdate=func.now(),
+    )
