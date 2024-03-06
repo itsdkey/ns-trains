@@ -8,4 +8,4 @@ class TrainFactory(factory.Factory):
         model = Train
 
     destination = FuzzyChoice(STATIONS)
-    id = factory.Faker("uuid4")
+    id = factory.Faker("name")

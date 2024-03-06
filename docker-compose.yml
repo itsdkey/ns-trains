@@ -7,29 +7,48 @@ services:
     ports:
       - "6379:6379"
 
-  trains:
+  trains1:
     build:
       context: trains
       dockerfile: "./Dockerfile"
+    container_name: "ns-trains-1"
     depends_on:
       - redis
-    deploy:
-      mode: replicated
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
     env_file: .env
+    environment:
+      TRAIN_ID: train1
     volumes:
       - "./trains/:/app"
 
-  headquarters:
+  trains2:
+    build:
+      context: trains
+      dockerfile: "./Dockerfile"
+    container_name: "ns-trains-2"
+    depends_on:
+      - redis
+    env_file: .env
+    environment:
+      TRAIN_ID: train2
+    volumes:
+      - "./trains/:/app"
+
+  headquarters1:
     build:
       context: headquarters
       dockerfile: "./Dockerfile"
-    container_name: "ns-headquarters"
+    container_name: "ns-headquarters-1"
+    depends_on:
+      - redis
+    env_file: .env
+    volumes:
+      - "./headquarters/:/app"
+
+  headquarters2:
+    build:
+      context: headquarters
+      dockerfile: "./Dockerfile"
+    container_name: "ns-headquarters-2"
     depends_on:
       - redis
     env_file: .env

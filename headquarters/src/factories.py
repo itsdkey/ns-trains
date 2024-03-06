@@ -9,7 +9,7 @@ class TrainInfoFactory(factory.Factory):
         model = TrainInfo
 
     destination = factory.Faker("city")
-    id = factory.Faker("uuid4")
+    id = factory.Faker("name")
     speed = FuzzyDecimal(0, 180)
 
 
