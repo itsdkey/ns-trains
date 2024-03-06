@@ -55,7 +55,7 @@ class TestProcessTrainStation(TestCase):
 
     def setUp(self) -> None:
         self.task = process_train_station
-        self.log_name = "headquarters"
+        self.log_name = "src.tasks"
         self.lineman_domain = os.environ.get("LINEMAN_DOMAIN")
 
         patch("src.tasks.sleep").start()
