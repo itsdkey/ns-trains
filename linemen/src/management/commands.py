@@ -1,6 +1,7 @@
 from random import choice
 
 from flask import Blueprint
+from sqlalchemy.dialects.postgresql import insert
 from src.db import db
 from src.models.models import Gate, GateState
 
@@ -28,7 +29,11 @@ def init_db():
         "Białystok Starosielce",
     ]
     states = [GateState.OPENED, GateState.CLOSED]
+    gates = []
     for station in stations:
-        gate = Gate(station=station, state=choice(states))
-        db.session.add(gate)
+        gates.append({"station": station, "state": str(choice(states))})
+    statement = insert(Gate).values(gates).return_defaults()
+    statement = statement.on_conflict_do_nothing(index_elements=["station"])
+    db.session.execute(statement)
     db.session.commit()
+    print(f"Created {gates=}")

@@ -29,7 +29,7 @@ services:
   db:
     container_name: 'linemen-db'
     env_file: .env
-    image: 'postgres:14.3-alpine'
+    image: 'postgres:16.1-alpine'
     networks:
       - ns_network
     ports:
