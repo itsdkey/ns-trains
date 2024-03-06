@@ -47,7 +47,7 @@ services:
     build:
       context: linemen
       dockerfile: "./Dockerfile"
-    command: ["bash", "wait-for-it.sh", "db:5432", "--", "flask", "db", "upgrade"]
+    command: ["bash", "init_db.sh"]
     container_name: "ns-linemen-migration"
     depends_on:
       - db
