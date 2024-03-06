@@ -33,34 +33,30 @@ services:
     volumes:
       - "./trains/:/app"
 
-  headquarters1:
+  headquarters:
     build:
       context: headquarters
       dockerfile: "./Dockerfile"
-    container_name: "ns-headquarters-1"
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
     depends_on:
       - redis
     env_file: .env
     volumes:
       - "./headquarters/:/app"
 
-  headquarters2:
-    build:
-      context: headquarters
-      dockerfile: "./Dockerfile"
-    container_name: "ns-headquarters-2"
-    depends_on:
-      - redis
-    env_file: .env
-    volumes:
-      - "./headquarters/:/app"
-
-  linemen:
+  linemen1:
     build:
       context: linemen
       dockerfile: "./Dockerfile"
     command: ["local_entrypoint.sh"]
-    container_name: "ns-linemen"
+    container_name: "ns-linemen-1"
     depends_on:
       - db
     env_file: .env
