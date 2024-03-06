@@ -11,9 +11,16 @@ services:
     build:
       context: trains
       dockerfile: "./Dockerfile"
-    container_name: "ns-trains"
     depends_on:
       - redis
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
     env_file: .env
     volumes:
       - "./trains/:/app"
