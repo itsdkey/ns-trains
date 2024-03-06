@@ -13,7 +13,10 @@ def test_get_returns_gates_state(app: Flask, client: FlaskClient):
         gate = GateFactory()
         db.session.commit()
         data = {"station": gate.station}
-        expected_data = {"state": str(gate.state)}
+        expected_data = {
+            "state": str(gate.state),
+            "updated_at": gate.updated_at.isoformat(),
+        }
 
     response = client.get(URL_PATH, query_string=data)
 

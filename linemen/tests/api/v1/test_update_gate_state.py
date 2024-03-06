@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from unittest.mock import ANY
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -12,7 +13,7 @@ def test_update_returns_new_gates_state(app: Flask, client: FlaskClient):
         gate = GateFactory(state=GateState.OPENED)
         db.session.commit()
         url = f"/gates/{gate.station}/change-state"
-    expected_data = {"state": str(GateState.CLOSED)}
+    expected_data = {"state": str(GateState.CLOSED), "updated_at": ANY}
 
     response = client.post(url)
 
