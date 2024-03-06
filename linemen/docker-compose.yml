@@ -18,7 +18,6 @@ services:
 
   migration:
     build: .
-    # command: ["bash", "wait-for-it.sh", "db:5432", "--", "flask", "db", "upgrade"]
     command: ["bash", "init_db.sh"]
     container_name: 'linemen-migration'
     depends_on:
