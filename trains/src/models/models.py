@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from decimal import Decimal
 from random import choice, random
-from uuid import UUID, uuid4
 
 STATIONS = [
     "Białystok",
@@ -25,7 +24,7 @@ STATIONS = [
 
 @dataclass
 class Train:
-    id: UUID = field(default_factory=lambda: uuid4())
+    id: str
     destination: str = field(default_factory=lambda: choice(STATIONS))
 
     @property

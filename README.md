@@ -10,11 +10,12 @@
 * [Debugging](#debugging)
 
 
+
 ## Env file
 Env variables are used around the project. To enable working on the project locally please fill the following variables in your .env file:
 
 * BROKER_URL=redis://redis:6379/0
-* LINEMAN_DOMAIN=http://linemen:8000
+* LINEMAN_DOMAIN=http://proxy:4000
 * POSTGRES_USER=postgres
 * POSTGRES_PASSWORD=linemen1234
 * POSTGRES_DB=linemen
@@ -50,11 +51,20 @@ project's conventions. More info here: https://pre-commit.com/
 This project contains the following containers:
 - redis - our Broker for celery
 - db - our Postgresql DB
-- trains - the trains app
+- trains1 - the trains app
+- trains2 - the trains app
 - headquarters - the headquarters app
+- proxy - the proxy app to act as a load balancer for the linemen replicas
 - linemen - the linemen app
 - migration - a shortcut to run migrations and prepopulate for the linemen service
 - wdb - a python debugger for backend devs (more on that later)
+
+
+### Why do we have two train services instead the same way headquarters and linemen?
+The issue here is that we need to pass a ENV VAR (TRAIN_ID) to each of those services with
+a different value. We could possibly use [swarm mode](https://docs.docker.com/engine/swarm/)
+however because this is only for local development and to show a basic concept I decided duplicate the
+service instead. More on passing unique env vars in docker compose [here](https://stackoverflow.com/questions/56203272/docker-compose-scaling-with-unique-environment-variable).
 
 To start the application and necessary containers locally with the following:
 ```shell
@@ -65,25 +75,25 @@ Note: you can run this in the background just but adding the option `-d` so the 
 
 This will run all the containers. To verify it is working please check the specific container's logs like:
 ```shell
-docker compose logs -f trains
+docker compose logs -f headquarters
 ```
 
 
 ## Doing stuff related to the project
 ### Always execute commands inside a container
 If you want to develop with docker compose you will need sometimes to execute commands
-inside the app's container because the whole environment is there. This is a separate enviroment from the
+inside the app's container because the whole environment is there. This is a separate environment from the
 one you have on your computer. Entering the container is also necessary because all the env vars are loaded
 from the `.env` file, and they will help you run your project smoothly.
 
 All the commands below this paragraph will require you to enter the container first. To do that
 please run one of the following commands:
 ```shell
-docker compose run --rm trains bash
+docker compose run --rm trains1 bash
 ```
 or:
 ```shell
-docker exec -it trains-app bash
+docker exec -it ns-trains-1 bash
 ```
 
 The first one creates a separate container if you have the project already running (it will be removed after

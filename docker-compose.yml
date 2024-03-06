@@ -7,14 +7,29 @@ services:
     ports:
       - "6379:6379"
 
-  trains:
+  trains1:
     build:
       context: trains
       dockerfile: "./Dockerfile"
-    container_name: "ns-trains"
+    container_name: "ns-trains-1"
     depends_on:
       - redis
     env_file: .env
+    environment:
+      TRAIN_ID: train1
+    volumes:
+      - "./trains/:/app"
+
+  trains2:
+    build:
+      context: trains
+      dockerfile: "./Dockerfile"
+    container_name: "ns-trains-2"
+    depends_on:
+      - redis
+    env_file: .env
+    environment:
+      TRAIN_ID: train2
     volumes:
       - "./trains/:/app"
 
@@ -22,24 +37,48 @@ services:
     build:
       context: headquarters
       dockerfile: "./Dockerfile"
-    container_name: "ns-headquarters"
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
     depends_on:
       - redis
     env_file: .env
     volumes:
       - "./headquarters/:/app"
 
+  # this is needed to mimic load-balancing to our linemen service replicas
+  proxy:
+    image: nginx:1.25-alpine
+    volumes:
+      - "./proxy/nginx.conf:/etc/nginx/nginx.conf:ro"
+    depends_on:
+      - linemen
+    ports:
+      - "4000:4000"
+
   linemen:
     build:
       context: linemen
       dockerfile: "./Dockerfile"
     command: ["local_entrypoint.sh"]
-    container_name: "ns-linemen"
     depends_on:
       - db
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
     env_file: .env
     ports:
-      - "8000:8000"
+      - "8000"
     volumes:
       - "./linemen/:/app"
 

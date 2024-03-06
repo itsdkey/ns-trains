@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
-from uuid import UUID
 
 from dataclasses_json import Undefined, config, dataclass_json
 from marshmallow import fields
@@ -13,7 +12,7 @@ from src.enums import EventType
 @dataclass
 class TrainInfo:
     destination: str
-    id: UUID
+    id: str
     speed: Decimal
 
 

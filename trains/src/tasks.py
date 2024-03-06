@@ -1,12 +1,14 @@
+import os
 from datetime import datetime
 from random import choice
+from uuid import uuid4
 
 from src import app
 from src.models.enums import EventType
 from src.models.factories import TrainFactory
 from src.models.models import STATIONS
 
-train = TrainFactory()
+train = TrainFactory(id=os.getenv("TRAIN_ID", str(uuid4())))
 
 
 @app.task(name="broadcast_train_speed")
