@@ -1,15 +1,15 @@
 """Init Gates.
 
-Revision ID: bf11fc4de46d
+Revision ID: 96e2e0a1ea14
 Revises:
-Create Date: 2024-03-06 10:08:16.239053
+Create Date: 2024-03-06 10:22:45.034993
 """
 
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = "bf11fc4de46d"
+revision = "96e2e0a1ea14"
 down_revision = None
 branch_labels = None
 depends_on = None
