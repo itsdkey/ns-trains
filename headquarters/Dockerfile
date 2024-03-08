@@ -25,8 +25,9 @@ RUN set -eux; \
     pip install --upgrade pip; \
     pip install --upgrade setuptools; \
     pip install -r requirements.txt; \
-    chown -R app:app /app
-
+    chown -R app:app /app; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*
 COPY . /app/
 
 USER 1000
